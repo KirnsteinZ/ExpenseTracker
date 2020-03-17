@@ -3,7 +3,7 @@ const { buildSchema } = require('graphql');
 const expressGraphql = require('express-graphql');
 const bodyParser = require('body-parser');
 
-const url = 'mongodb://localhost:27017/learning-mongodb';
+const url = 'mongodb+srv://user1:Test1234@cluster0-rluxm.mongodb.net/test?retryWrites=true&w=majority';
 const mongoose = require('./mongoose');
 mongoose.mongoose(url);
 
