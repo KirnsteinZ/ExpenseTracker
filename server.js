@@ -3,10 +3,10 @@ const bodyParser = require('body-parser');
 const redis = require('redis');
 
 //settingan atlas db
-// const url = 'mongodb+srv://user1:Test1234@cluster0-rluxm.mongodb.net/test?retryWrites=true&w=majority';
+const url = 'mongodb+srv://user1:Test1234@cluster0-rluxm.mongodb.net/test?retryWrites=true&w=majority';
 
 //settingan local
-const url = 'mongodb://localhost:27017/learning-mongodb';
+// const url = 'mongodb://localhost:27017/learning-mongodb';
 
 const mongoose = require('./mongoose');
 mongoose.mongoose(url);
