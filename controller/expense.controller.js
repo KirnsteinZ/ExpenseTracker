@@ -1,8 +1,44 @@
-const Expense = require('../model/expense.model');
+const Model = require('../model/expense.model');
+const moment = require('moment');
+
+const findToday = async (req,res) => {
+    const today = moment().startOf('day')
+    Model.find({
+        createdAt: {
+          $gte: moment().startOf('day').toDate(),
+          $lte: moment(today).endOf('day').toDate()
+        }
+    }).then(data => res.json(data))
+    .catch((error)=>{
+        console.log('Error : ', error);
+        res.status(500).json({ error:error});
+    })
+}
+
+const countToday = async (req,res) => {
+    const today = moment().startOf('day')
+    Model.find({
+        createdAt: {
+          $gte: moment().startOf('day').toDate(),
+          $lte: moment(today).endOf('day').toDate()
+        }
+    })
+    .then(data => {
+        var total = 0;
+        for (let index = 0; index < data.length; index++) {
+            total += data[index].total?data[index].total:0;
+        }
+        res.json({total})
+    })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        res.status(500).json({ error:error});
+    })
+}
 
 const findAll = async (req,res) => {
     try {
-        const data = await Expense.find({});
+        const data = await Model.find({});
         res.json({'data' : data});
     } catch (error) {
         console.log('Error : ', error);
@@ -11,7 +47,7 @@ const findAll = async (req,res) => {
 }
 
 const create = async (req,res) => {
-    var expense = new Expense(req.body)
+    var expense = new Model(req.body)
     expense.save()
     .then((data) => res.json(expense))
     .catch((error)=>{
@@ -20,7 +56,7 @@ const create = async (req,res) => {
     })}
 
 const updateOne = async (req,res) => {
-        Expense.findById(req.body.id)
+    Model.findById(req.body.id)
         .then((data) => {
             data.name = req.body.name==null?data.name:req.body.name
             data.species = req.body.species==null?data.species:req.body.species
@@ -35,7 +71,7 @@ const updateOne = async (req,res) => {
 };
 
 const update = async (req,res) => {
-    Expense.findByIdAndUpdate(req.body.id,{$set : req.body},{new: true, useFindAndModify: false})
+    Model.findByIdAndUpdate(req.body.id,{$set : req.body},{new: true, useFindAndModify: false})
     .then((pet) => {
         if(!pet) res.status(500).json({ error:"ID not found"});
         res.json(pet);
@@ -46,7 +82,7 @@ const update = async (req,res) => {
     })}
 
 const remove = async (req,res) => {
-    Expense.findByIdAndDelete(req.body.id)
+    Model.findByIdAndDelete(req.body.id)
     .then((data) => {
         res.json(data);
     })
@@ -56,9 +92,50 @@ const remove = async (req,res) => {
     })
 }
 
+const graphqlRead = async () => await Model.find({});
+
+const graphqlGetById = (id) => Model.findById(id).then(data => { return data });
+
+const graphqlCreate = async (input) => {
+    input.id = null;
+    input.time = new Date();
+    var expense = new Model(input)
+    expense.save()
+    .then(data => { return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
+const graphqlUpdate = async (input) => {
+    Model.findByIdAndUpdate(input.id,input)
+    .then(data => { console.log(data); return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
+const graphqlDelete = async (id) => {
+    Model.findByIdAndDelete(id)
+    .then(data => { return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
 module.exports = {
     findAll,
     create,
     update,
-    remove
+    remove,
+    graphqlRead,
+    graphqlGetById,
+    graphqlCreate,
+    graphqlUpdate,
+    graphqlDelete,
+    findToday,
+    countToday
 }

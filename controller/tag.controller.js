@@ -57,9 +57,50 @@ const remove = async (req,res) => {
     })
 }
 
+const graphqlRead = async () => await Model.find({});
+
+const graphqlGetById = (id) => Model.findById(id).then(data => { return data });
+
+const graphqlCreate = async (input) => {
+    console.log(input)
+    input.id = null;
+    var expense = new Model(input)
+    expense.save()
+    .then(data => { return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
+const graphqlUpdate = async (input) => {
+    console.log(input)
+    Model.findByIdAndUpdate(input.id,input)
+    .then(data => { console.log(data); return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
+const graphqlDelete = async (id) => {
+    console.log(id)
+    Model.findByIdAndDelete(id)
+    .then(data => { return data })
+    .catch((error)=>{
+        console.log('Error : ', error);
+        return error;
+    })
+}
+
 module.exports = {
     findAll,
     create,
     update,
-    remove
+    remove,
+    graphqlRead,
+    graphqlGetById,
+    graphqlCreate,
+    graphqlUpdate,
+    graphqlDelete
 }

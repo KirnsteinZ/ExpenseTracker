@@ -6,7 +6,8 @@ const ExpenseSchema = mongoose.Schema({
     tag: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tag' }],
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'category' },
     out: {type:Boolean,required:true},
-    desc: String
+    desc: String,
+    time: Date
 },
 {
     timestamps : true

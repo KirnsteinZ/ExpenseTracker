@@ -12,9 +12,7 @@ const expense = require('./model/expense.model')(Mongoose)
 const tag = require('./model/tag.model')(Mongoose)
 const category = require('./model/category.model')(Mongoose)
 
-const getExpense = () => {
-    return expense;
-}
+const getExpense = () => expense;
 const getTag = () => tag;
 const getCategory = () => category;
 const getMongoose = () => Mongoose;
